@@ -1,8 +1,5 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
-from __future__ import print_function
-
-import sys, os
 import socket
 import argparse
 import time
@@ -15,14 +12,16 @@ def pio_test(ip, tport, sport, data_size, count, delay, verbose):
 	si = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	si.bind(("", sport))
 	si.settimeout(1)
-	data_add = " " * (data_size - 1)
+	data = bytearray(" " * data_size, 'utf-8')
+
 	avg_delta = 0
 	try:
 		ok = True
-		for i in xrange(count):
+		for i in range(count):
 			# gen data
 			tag = i % 128
-			data = chr(64+tag) + data_add
+			# int to hex
+			data[0] = 64 + tag
 			# send data
 			start = time.time()
 			si.sendto(data, (ip, tport))
